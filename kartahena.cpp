@@ -22,6 +22,9 @@ int indexWithMinElement(int * arr, int n) {
     return minIndex;
 }
 
+
+
+
 int main(int argc, char const *argv[])
 {
     srand(time(0));
@@ -48,7 +51,7 @@ int main(int argc, char const *argv[])
       
 
     int result = bucket[indexWithMinElement(bucket, 7)] + 2;
-    
+
     cout << result << endl;
 
     return 0;
