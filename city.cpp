@@ -6,16 +6,13 @@
 
 using namespace std;
 
-int n = 4, m = 5;
-int c = 0;
-
-int countStars(char matrix[4][5], string path)
+int countStars( vector < vector <char> > &matrix, string path)
 {
+
     int i = 0, j = 0;
     int c = 0;
     if (matrix[i][j] == '*')
     {
-        // matrix[i][j] = '.';
         c++;
     }
     for (int k = 0; k < path.length(); k++)
@@ -25,7 +22,6 @@ int countStars(char matrix[4][5], string path)
             j++;
             if (matrix[i][j] == '*')
             {
-                // matrix[i][j] = '.';
                 c++;
             }
         }
@@ -34,7 +30,6 @@ int countStars(char matrix[4][5], string path)
             i++;
             if (matrix[i][j] == '*')
             {
-                // matrix[i][j] = '.';
                 c++;
             }
         }
@@ -42,9 +37,10 @@ int countStars(char matrix[4][5], string path)
     return c;
 }
 
-void deleteStars(string path, char  matrix[4][5]){ 
+void deleteStars(string path,  vector < vector <char> > & matrix)
+{
     int i = 0, j = 0;
-    if (matrix[i][j] == '*') 
+    if (matrix[i][j] == '*')
     {
         matrix[i][j] = '.';
     }
@@ -69,8 +65,7 @@ void deleteStars(string path, char  matrix[4][5]){
     }
 }
 
-
-void downWay(int i, int j, char matrix[4][5], string str, vector<string> &strings)
+void WaysToStrings(int i, int j, int n, int m,  vector < vector <char> > & matrix, string str, vector<string> &strings)
 {
     string right;
     string down;
@@ -80,34 +75,13 @@ void downWay(int i, int j, char matrix[4][5], string str, vector<string> &string
     if (j + 1 < m && matrix[i][j + 1] != '#')
     {
         right.append("R");
-        downWay(i, j + 1, matrix, right, strings);
+        WaysToStrings(i, j + 1, n, m, matrix, right, strings);
     }
     if (i + 1 < n && matrix[i + 1][j] != '#')
     {
         down.append("D");
-        downWay(i + 1, j, matrix, down, strings);
+        WaysToStrings(i + 1, j, n, m, matrix, down, strings);
     }
-    if (str.length() == n + m - 2)
-        strings.push_back(str);
-}
-
-void upWay(int i, int j, char matrix[4][5], string str, vector<string> & strings)
-{
-    string left;
-    string up;
-    left.assign(str);
-    up.assign(str);
-
-    if (j < 0 && matrix[i][j - 1] != '#')
-    {
-        left.append("L");
-        upWay(i, j - 1, matrix, left, strings);
-    }
-    if (i < 0 && matrix[i - 1][j] != '#')
-    {
-        up.append("U");
-        upWay(i - 1, j, matrix, up, strings);
-    }   
     if (str.length() == n + m - 2)
         strings.push_back(str);
 }
@@ -115,61 +89,51 @@ void upWay(int i, int j, char matrix[4][5], string str, vector<string> & strings
 int main(int argc, char const *argv[])
 {
 
-    // cin >> n;
-    // cin >> m;
-    // char matrix[n][m];
-    // for (int i = 0; i < n; i++) {
-    //     for(int j = 0; j < m; j++) {
-    //         cin >> matrix[i][j];
-    //     }
-    // }
-    // n = 4; m = 5;
-    char matrix[4][5] = {
-        {'*', '.', '.', '.', '.'},
-        {'*', '.', '#', '#', '.'}, 
-        {'.', '#', '*', '.', '*'},
-        {'*', '.', '*', '.', '*'}};
+    int n, m;      
+    cin >> n >> m;
+
+    vector < vector <char> > matrix(n, vector <char> (m) );
+    
+
+
+   for (int i = 0; i < n; i++)   
+        for (int j = 0; j < m; j++) 
+        {
+            cin >> matrix[i][j]; 
+        }
+
+    
 
     vector<string> strings;
-    downWay(0, 0, matrix, "", strings);
-    int maxStars = 0;
+
+    int maxStarsDown = 0;
+    int maxStarsUp = 0;
+    int optWayIndex = 0;
 
     string optimalDway;
-   
+
+    WaysToStrings(0, 0, n, m, matrix, "", strings); 
     for (int i = 0; i < strings.size(); i++)
     {
-        // cout << strings[i] << endl;
         int c = countStars(matrix, strings[i]);
-        if (c > maxStars) {
-            optimalDway.assign(strings[i]);  
-            maxStars = c;
+        if (c > maxStarsDown)
+        {
+            optWayIndex = i;
+            maxStarsDown = c;
         }
-        
-        // cout << maxStars << endl;
-        
     }
-    deleteStars(optimalDway, matrix);
-    // for (int i = 0; i < 4; i++) {
-    //     for (int j = 0; j < 5; j++) {
-    //         cout << matrix[i][j];
-    //     }
-    //     cout << endl; 
-    // }
-
-    vector<string> stringsUp;    
-    upWay(3, 4, matrix, "", stringsUp);
-    for (int i = 0; i < stringsUp.size(); i++)
+    deleteStars(strings[optWayIndex], matrix);
+    for (int i = 0; i < strings.size(); i++)
     {
-        cout << stringsUp[i] << endl;
-        // int c = countStars(matrix, strings[i]);
-        // if (c > maxStars) {
-        //     optimalDway.assign(strings[i]);  
-        //     maxStars = c;
-        // }
-        
-        // cout << maxStars << endl;
-        
+        int c = countStars(matrix, strings[i]);
+        if (c > maxStarsUp && i != optWayIndex)
+        {
+            optimalDway.assign(strings[i]);
+            maxStarsUp = c;
+        }
     }
+
+    cout << maxStarsDown + maxStarsUp << endl;
 
     return 0;
 }
