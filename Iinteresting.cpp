@@ -1,12 +1,10 @@
-
-
 #include <iostream>
 #include <cmath>
 #include <cassert>
 
 using namespace std;
 
-size_t closestPow2(int n, long long *mask)
+size_t closestPow2(int n, int *mask)
 {
     if  (n == 0) {
         mask[0] = 1;
@@ -23,7 +21,8 @@ size_t closestPow2(int n, long long *mask)
     mask[return_pow] = 1;
     return return_pow;
 }
-void solution_helper(int n, long long *arr)
+
+void solution_helper(int n, int *arr)
 {
     if (n <= 0)
         return;
@@ -38,7 +37,7 @@ void solution_helper(int n, long long *arr)
     }
 }
 
-void fillMask(long long *mask, int *nums, int n)
+void fillMask(int *mask, int *nums, int n)
 {
     for (int i = 0; i < n; i++)
     {
@@ -46,34 +45,23 @@ void fillMask(long long *mask, int *nums, int n)
     }
 }
 
-void solution(int n, long long *mask)
+void solution(int n, int *mask)
 {
-        // if (n <= 0)
-        //     return;
-        // int cPow = closestPow2(n, mask);  
-        // if (pow(2, cPow) > n)
-        // {
-        //     printf("%d - %d\n", tmp, tmp1);
-        //     solution_helper(pow(2, cPow) - n, mask);
-        // }
-        // else
-        // {
-        //     solution_helper(n - pow(2, cPow), mask);
-        // }
     int tmp1 = 0;
     int tmp = pow(2, closestPow2(n, mask));
     while(true) {
         if (tmp < n)
         {   
             tmp1 = pow(2, closestPow2(n -  tmp, mask)); 
-            // if ()
-            printf("%d + %d\n", tmp, tmp1);
+            if (tmp1 + tmp != 2)
+                printf("%d + %d\n", tmp, tmp1);
             tmp += tmp1;
         }
         else
         {
             tmp1 = pow(2, closestPow2(tmp - n, mask)); 
-            printf("%d - %d\n", tmp, tmp1);
+            if (tmp != tmp1 && tmp != 2 && tmp1 != 1)
+                printf("%d - %d\n", tmp, tmp1);
             tmp -= tmp1;
         }
         if (tmp == n || tmp == 0) break;
@@ -89,11 +77,11 @@ int main(void)
     {
         cin >> arr[i]; 
     }
-    long long mask[100];
+    int mask[100]; 
     for (int i = 0; i < 100; i++)
         mask[i] = 0;
 
-    fillMask(mask, arr, n);
+    fillMask(mask, arr, n); 
     for (int i = 0; i < 100; i++)
     {
         if (mask[i])
@@ -101,7 +89,6 @@ int main(void)
     }
     for (int i = 0; i < n; i++)
         solution(arr[i], mask);
-    // assert(closestPow2(1, mask) == 0);
 
     return 0;
 }
